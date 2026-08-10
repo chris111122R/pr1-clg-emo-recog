@@ -1,0 +1,74 @@
+[
+    {
+        "filename": "clean.jpg",
+        "name": "clean",
+        "severity": "none",
+        "type": "clean"
+    },
+    {
+        "filename": "blur_mild.jpg",
+        "name": "blur_mild",
+        "severity": "mild",
+        "type": "blur"
+    },
+    {
+        "filename": "blur_moderate.jpg",
+        "name": "blur_moderate",
+        "severity": "moderate",
+        "type": "blur"
+    },
+    {
+        "filename": "blur_heavy.jpg",
+        "name": "blur_heavy",
+        "severity": "heavy",
+        "type": "blur"
+    },
+    {
+        "filename": "noise_mild.jpg",
+        "name": "noise_mild",
+        "severity": "mild",
+        "type": "noise"
+    },
+    {
+        "filename": "noise_moderate.jpg",
+        "name": "noise_moderate",
+        "severity": "moderate",
+        "type": "noise"
+    },
+    {
+        "filename": "noise_heavy.jpg",
+        "name": "noise_heavy",
+        "severity": "heavy",
+        "type": "noise"
+    },
+    {
+        "filename": "occlusion_10.jpg",
+        "name": "occlusion_10",
+        "severity": "mild",
+        "type": "occlusion"
+    },
+    {
+        "filename": "occlusion_30.jpg",
+        "name": "occlusion_30",
+        "severity": "moderate",
+        "type": "occlusion"
+    },
+    {
+        "filename": "occlusion_50.jpg",
+        "name": "occlusion_50",
+        "severity": "heavy",
+        "type": "occlusion"
+    },
+    {
+        "filename": "jpeg_heavy.jpg",
+        "name": "jpeg_heavy",
+        "severity": "heavy",
+        "type": "jpeg"
+    },
+    {
+        "filename": "garbage_random.jpg",
+        "name": "garbage_random",
+        "severity": "extreme",
+        "type": "garbage"
+    }
+]

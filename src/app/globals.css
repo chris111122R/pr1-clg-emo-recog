@@ -1,0 +1,184 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+/* --- Global Theme Definitions --- */
+@theme {
+  /* Fonts */
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  
+  /* Radii */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Shadows (Glass/Soft Depth) */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05), 0 0 1px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+  
+  /* Motion & Easing */
+  --animate-duration-micro: 150ms;
+  --animate-duration-standard: 250ms;
+  --animate-duration-page: 500ms;
+  --animate-ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
+  
+  /* Exporting as standard Tailwind utilities */
+  --ease-premium: var(--animate-ease-premium);
+  --duration-micro: var(--animate-duration-micro);
+  --duration-standard: var(--animate-duration-standard);
+  --duration-page: var(--animate-duration-page);
+
+  /* Semantic Colors from Custom Properties */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Confidence colors */
+  --color-confidence-low: var(--confidence-low);
+  --color-confidence-medium: var(--confidence-medium);
+  --color-confidence-high: var(--confidence-high);
+}
+
+@layer base {
+  :root {
+    /* Neutrals: Slate/Zinc mix */
+    --background: #f8fafc; /* slate-50 */
+    --foreground: #0f172a; /* slate-900 */
+    
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    
+    /* AI Accent: Phosphor Teal */
+    --primary: #0d9488; /* teal-600 */
+    --primary-foreground: #ffffff;
+    
+    --secondary: #f1f5f9; /* slate-100 */
+    --secondary-foreground: #334155; /* slate-700 */
+    
+    --muted: #f1f5f9;
+    --muted-foreground: #334155; /* slate-700 for accessible contrast */
+    
+    --accent: #e0f2fe; /* sky-100 used as accent */
+    --accent-foreground: #0369a1; /* sky-700 */
+    
+    --destructive: #b91c1c; /* red-700 for accessible contrast */
+    --destructive-foreground: #ffffff;
+    
+    --success: #047857; /* emerald-700 for accessible contrast */
+    --success-foreground: #ffffff;
+    
+    --warning: #b45309; /* amber-700 for accessible contrast */
+    --warning-foreground: #ffffff;
+    
+    --info: #1d4ed8; /* blue-700 for accessible contrast */
+    --info-foreground: #ffffff;
+    
+    --border: #e2e8f0; /* slate-200 */
+    --input: #e2e8f0;
+    --ring: #0d9488;
+    
+    /* Confidence ramps */
+    --confidence-low: #f43f5e; /* rose-500 */
+    --confidence-medium: #eab308; /* yellow-500 */
+    --confidence-high: #14b8a6; /* teal-500 */
+  }
+
+  .dark {
+    /* Deep Neutrals */
+    --background: #020617; /* slate-950 */
+    --foreground: #f8fafc; /* slate-50 */
+    
+    --card: #0f172a; /* slate-900 */
+    --card-foreground: #f8fafc;
+    
+    --popover: #0f172a;
+    --popover-foreground: #f8fafc;
+    
+    /* AI Accent: Lighter Phosphor Teal */
+    --primary: #2dd4bf; /* teal-400 */
+    --primary-foreground: #042f2e; /* teal-950 */
+    
+    --secondary: #1e293b; /* slate-800 */
+    --secondary-foreground: #e2e8f0; /* slate-200 */
+    
+    --muted: #1e293b;
+    --muted-foreground: #cbd5e1; /* slate-300 for accessible contrast in dark mode */
+    
+    --accent: #1e293b;
+    --accent-foreground: #2dd4bf;
+    
+    --destructive: #f87171; /* red-400 */
+    --destructive-foreground: #450a0a;
+    
+    --success: #34d399; /* emerald-400 */
+    --success-foreground: #022c22;
+    
+    --warning: #fbbf24; /* amber-400 */
+    --warning-foreground: #451a03;
+    
+    --info: #60a5fa; /* blue-400 */
+    --info-foreground: #1e3a8a;
+    
+    --border: #334155; /* slate-700 */
+    --input: #334155;
+    --ring: #2dd4bf;
+    
+    /* Confidence ramps */
+    --confidence-low: #fb7185; /* rose-400 */
+    --confidence-medium: #facc15; /* yellow-400 */
+    --confidence-high: #2dd4bf; /* teal-400 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+  
+@media (prefers-reduced-motion: reduce) { *, ::before, ::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; } } 

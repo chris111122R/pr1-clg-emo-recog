@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: udt_admin
+      POSTGRES_PASSWORD: udt_password
+      POSTGRES_DB: ua_edt_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U udt_admin -d ua_edt_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://udt_admin:udt_password@db:5432/ua_edt_db?schema=public
+      - ML_BACKEND_URL=http://ml-backend:8000
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=UA_EDT_SUPER_SECRET_KEY_FOR_PROD_12345
+    depends_on:
+      db:
+        condition: service_healthy
+      ml-backend:
+        condition: service_started
+
+  ml-backend:
+    build:
+      context: ./ml-backend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       # Uncomment the lines below if deploying to a host with NVIDIA GPUs configured in Docker
+    #       # devices:
+    #       #   - driver: nvidia
+    #       #     count: 1
+    #       #     capabilities: [gpu]
+
+volumes:
+  postgres_data:

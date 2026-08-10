@@ -1,0 +1,230 @@
+{
+    "clean": {
+        "predicted_class": "Joy",
+        "evidence": [
+            2.029909372329712,
+            0.4873065650463104,
+            0.2737492322921753,
+            0.5090107917785645,
+            1.243153691291809,
+            1.3507941961288452,
+            0.19226041436195374
+        ],
+        "dirichlet_strength_S": 13.086183547973633,
+        "vacuity_u": 0.5349152684211731,
+        "energy_score": -2.621682643890381,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "none",
+        "type": "clean"
+    },
+    "blur_mild": {
+        "predicted_class": "Disgust",
+        "evidence": [
+            1.7741814851760864,
+            0.561723530292511,
+            0.34722036123275757,
+            0.6401916146278381,
+            1.2875522375106812,
+            1.7759175300598145,
+            0.17744316160678864
+        ],
+        "dirichlet_strength_S": 13.564229965209961,
+        "vacuity_u": 0.5160632133483887,
+        "energy_score": -2.6868185997009277,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "mild",
+        "type": "blur"
+    },
+    "blur_moderate": {
+        "predicted_class": "Joy",
+        "evidence": [
+            1.8512897491455078,
+            0.5673068761825562,
+            0.35264459252357483,
+            0.7944343686103821,
+            1.5149834156036377,
+            1.5995464324951172,
+            0.2224711924791336
+        ],
+        "dirichlet_strength_S": 13.902676582336426,
+        "vacuity_u": 0.5035001635551453,
+        "energy_score": -2.7419261932373047,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "moderate",
+        "type": "blur"
+    },
+    "blur_heavy": {
+        "predicted_class": "Joy",
+        "evidence": [
+            1.9518095254898071,
+            0.47192004323005676,
+            0.22928886115550995,
+            0.6810943484306335,
+            0.9762095212936401,
+            1.3329490423202515,
+            0.3404255509376526
+        ],
+        "dirichlet_strength_S": 12.983696937561035,
+        "vacuity_u": 0.5391376614570618,
+        "energy_score": -2.543989896774292,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "heavy",
+        "type": "blur"
+    },
+    "noise_mild": {
+        "predicted_class": "Joy",
+        "evidence": [
+            1.8314789533615112,
+            0.49073466658592224,
+            0.29731202125549316,
+            0.730893611907959,
+            1.0763341188430786,
+            1.3884532451629639,
+            0.22767233848571777
+        ],
+        "dirichlet_strength_S": 13.042879104614258,
+        "vacuity_u": 0.5366913676261902,
+        "energy_score": -2.5255703926086426,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "mild",
+        "type": "noise"
+    },
+    "noise_moderate": {
+        "predicted_class": "Joy",
+        "evidence": [
+            1.8130555152893066,
+            0.5320906043052673,
+            0.2621537148952484,
+            0.40499481558799744,
+            1.1261556148529053,
+            1.695387840270996,
+            0.253578782081604
+        ],
+        "dirichlet_strength_S": 13.087417602539062,
+        "vacuity_u": 0.5348648428916931,
+        "energy_score": -2.5991146564483643,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "moderate",
+        "type": "noise"
+    },
+    "noise_heavy": {
+        "predicted_class": "Disgust",
+        "evidence": [
+            1.670529842376709,
+            0.2950880527496338,
+            0.3425518572330475,
+            0.9337620139122009,
+            0.8084802627563477,
+            1.685890793800354,
+            0.3381553888320923
+        ],
+        "dirichlet_strength_S": 13.074459075927734,
+        "vacuity_u": 0.5353950262069702,
+        "energy_score": -2.5380475521087646,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "heavy",
+        "type": "noise"
+    },
+    "occlusion_10": {
+        "predicted_class": "Joy",
+        "evidence": [
+            1.9029364585876465,
+            0.5677897930145264,
+            0.23296216130256653,
+            0.5218777656555176,
+            1.4004193544387817,
+            1.6188249588012695,
+            0.16623978316783905
+        ],
+        "dirichlet_strength_S": 13.411050796508789,
+        "vacuity_u": 0.5219576358795166,
+        "energy_score": -2.6880078315734863,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "mild",
+        "type": "occlusion"
+    },
+    "occlusion_30": {
+        "predicted_class": "Joy",
+        "evidence": [
+            1.9031027555465698,
+            0.8713321089744568,
+            0.27770620584487915,
+            0.4263859689235687,
+            1.6245002746582031,
+            1.8446929454803467,
+            0.21453437209129333
+        ],
+        "dirichlet_strength_S": 14.16225528717041,
+        "vacuity_u": 0.49427157640457153,
+        "energy_score": -2.8673248291015625,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "moderate",
+        "type": "occlusion"
+    },
+    "occlusion_50": {
+        "predicted_class": "Joy",
+        "evidence": [
+            1.9681806564331055,
+            0.467318058013916,
+            0.3203337788581848,
+            0.5592440962791443,
+            1.2261273860931396,
+            1.3050241470336914,
+            0.3694840967655182
+        ],
+        "dirichlet_strength_S": 13.21571159362793,
+        "vacuity_u": 0.5296725630760193,
+        "energy_score": -2.5969741344451904,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "heavy",
+        "type": "occlusion"
+    },
+    "jpeg_heavy": {
+        "predicted_class": "Joy",
+        "evidence": [
+            1.9754177331924438,
+            0.43142828345298767,
+            0.4789244532585144,
+            0.7602415084838867,
+            0.951866865158081,
+            1.4594722986221313,
+            0.30941855907440186
+        ],
+        "dirichlet_strength_S": 13.366768836975098,
+        "vacuity_u": 0.5236867666244507,
+        "energy_score": -2.6216988563537598,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "heavy",
+        "type": "jpeg"
+    },
+    "garbage_random": {
+        "predicted_class": "Disgust",
+        "evidence": [
+            1.68489670753479,
+            0.46174514293670654,
+            0.30176571011543274,
+            0.4562841057777405,
+            1.4844651222229004,
+            1.8085814714431763,
+            0.18349610269069672
+        ],
+        "dirichlet_strength_S": 13.381235122680664,
+        "vacuity_u": 0.5231205821037292,
+        "energy_score": -2.6827306747436523,
+        "is_ood": true,
+        "fused_confidence": 0.0,
+        "severity": "extreme",
+        "type": "garbage"
+    }
+}

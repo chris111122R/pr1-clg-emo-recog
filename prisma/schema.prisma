@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// NextAuth Models
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          String    @default("USER") // USER, ADMIN
+  accounts      Account[]
+  sessions      Session[]
+  
+  digitalTwin   DigitalTwin?
+  predictions   Prediction[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// UA-EDT Models
+model DigitalTwin {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  currentEmotion     String?
+  currentConfidence  Float?
+  currentUncertainty Float?
+  
+  history            Json?    // Stores historical trends (daily/weekly/monthly)
+  updatedAt          DateTime @updatedAt
+}
+
+model Dataset {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  modality      String   // IMAGE, AUDIO, TEXT, VIDEO, MULTIMODAL
+  type          String   // CSV, FOLDER, JSON
+  sizeBytes     Int?
+  status        String   @default("UPLOADED") // UPLOADED, PREPROCESSING, READY, ERROR
+  preprocessing Json?    // Stores logs or status details
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  models        ModelConfig[]
+}
+
+model ModelConfig {
+  id             String   @id @default(cuid())
+  name           String
+  architecture   String   // ResNet50, Wav2Vec2, BERT, etc.
+  modality       String
+  hyperparams    Json?
+  status         String   @default("CONFIGURED") // CONFIGURED, TRAINING, COMPLETED, FAILED
+  metrics        Json?    // loss, accuracy, etc.
+  datasetId      String
+  dataset        Dataset  @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  
+  checkpointPath String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Prediction {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  modality           String   // IMAGE, AUDIO, TEXT, VIDEO
+  inputDataPath      String   // Path to uploaded file or raw text
+  
+  predictedEmotion   String
+  confidence         Float
+  uncertainty        Float
+  explanationSummary String?  @db.Text
+  explainabilityData Json?    // Extracted features, SHAP/LIME outputs, etc.
+  
+  modelUsed          String?
+  
+  createdAt          DateTime @default(now())
+}

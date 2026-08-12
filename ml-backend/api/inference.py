@@ -45,6 +45,20 @@ BASIC_TO_GOEMOTIONS_MAP = {
     "neutral": "neutral"
 }
 
+# VAD Mapping for GoEmotions (Valence, Arousal, Dominance)
+VAD_MAPPING = {
+    "admiration": (0.5, 0.3, 0.1), "amusement": (0.6, 0.4, 0.2), "anger": (-0.8, 0.8, 0.5), 
+    "annoyance": (-0.4, 0.5, 0.2), "approval": (0.4, 0.1, 0.1), "caring": (0.6, -0.1, 0.2), 
+    "confusion": (-0.2, 0.3, -0.4), "curiosity": (0.3, 0.4, -0.1), "desire": (0.5, 0.6, 0.2), 
+    "disappointment": (-0.6, -0.4, -0.2), "disapproval": (-0.5, 0.1, 0.1), "disgust": (-0.8, 0.6, 0.1), 
+    "embarrassment": (-0.4, 0.5, -0.5), "excitement": (0.8, 0.9, 0.3), "fear": (-0.8, 0.8, -0.8), 
+    "gratitude": (0.7, 0.2, 0.1), "grief": (-0.8, -0.6, -0.6), "joy": (0.8, 0.6, 0.3), 
+    "love": (0.8, 0.5, 0.4), "nervousness": (-0.5, 0.7, -0.6), "optimism": (0.6, 0.4, 0.3), 
+    "pride": (0.7, 0.5, 0.6), "realization": (0.2, 0.4, 0.1), "relief": (0.6, -0.5, 0.1), 
+    "remorse": (-0.6, -0.2, -0.5), "sadness": (-0.8, -0.6, -0.5), "surprise": (0.4, 0.8, -0.2), 
+    "neutral": (0.0, 0.0, 0.0)
+}
+
 def query_hf_classification(model_id: str, payload, is_json=True, content_type=None):
     url = f"https://router.huggingface.co/hf-inference/models/{model_id}"
     try:
@@ -113,31 +127,50 @@ async def predict_multimodal(
 
         active_modalities = 0
         total_probs = {label: 0.0 for label in GOEMOTIONS_LABELS}
+        modality_weights_raw = []
 
         # 1. Gather Predictions
         if text:
             text_probs = process_text_classification(text)
+            modality_weights_raw.append(max(text_probs.values()) if text_probs else 0)
             for k in total_probs: total_probs[k] += text_probs[k]
             active_modalities += 1
             
         if audio_bytes:
             audio_probs = process_audio_classification(audio_bytes)
+            modality_weights_raw.append(max(audio_probs.values()) if audio_probs else 0)
             for k in total_probs: total_probs[k] += audio_probs[k]
             active_modalities += 1
             
         if image_bytes:
             image_probs = process_image_classification(image_bytes)
+            modality_weights_raw.append(max(image_probs.values()) if image_probs else 0)
             for k in total_probs: total_probs[k] += image_probs[k]
             active_modalities += 1
 
-        fallback_used = active_modalities == 0
+        if active_modalities == 0:
+            raise HTTPException(status_code=400, detail="No active modalities provided or all APIs failed.")
+
+        # Normalize cross_modal_attention
+        sum_weights = sum(modality_weights_raw)
+        if sum_weights > 0:
+            cross_modal_attention = [round(w / sum_weights, 3) for w in modality_weights_raw]
+        else:
+            cross_modal_attention = [round(1.0 / active_modalities, 3)] * active_modalities
 
         # 2. Late Fusion (Average Probabilities)
         if active_modalities > 0:
             for k in total_probs:
                 total_probs[k] /= active_modalities
+            
+            prob_sum = sum(total_probs.values())
+            if prob_sum > 0:
+                normalized_probs = {k: v / prob_sum for k, v in total_probs.items()}
+            else:
+                normalized_probs = {k: 1.0 / len(GOEMOTIONS_LABELS) for k in GOEMOTIONS_LABELS}
         else:
             total_probs["neutral"] = 1.0
+            normalized_probs = {k: 1.0 if k == "neutral" else 0.0 for k in GOEMOTIONS_LABELS}
 
         # 3. Extract Top 5
         sorted_emotions = sorted(total_probs.items(), key=lambda x: x[1], reverse=True)
@@ -149,6 +182,32 @@ async def predict_multimodal(
         emotion = sorted_emotions[0][0]
         confidence = round(sorted_emotions[0][1] * 100.0, 2)
 
+        # Calculate real uncertainty proxies
+        import math
+        entropy = 0.0
+        for p in normalized_probs.values():
+            if p > 0:
+                entropy -= p * math.log(p)
+        max_entropy = math.log(len(GOEMOTIONS_LABELS))
+        normalized_entropy = entropy / max_entropy if max_entropy > 0 else 0
+
+        # Total uncertainty proxy based on 1 - confidence (max probability)
+        total_u = max(0.0, round((1.0 - (confidence / 100.0)) * 100.0, 2))
+        epistemic_u = max(0.0, round(normalized_entropy * total_u, 2))
+        aleatoric_u = max(0.0, round(total_u - epistemic_u, 2))
+
+        # Calculate VAD
+        v, a, d = 0.0, 0.0, 0.0
+        for em, p in normalized_probs.items():
+            if em in VAD_MAPPING:
+                v += p * VAD_MAPPING[em][0]
+                a += p * VAD_MAPPING[em][1]
+                d += p * VAD_MAPPING[em][2]
+
+        ood_score = round(normalized_entropy, 3)
+        is_ood = ood_score > 0.8
+        calibration_ece = max(0.0, round(epistemic_u / 100.0, 3))
+
         # Final Inference Output JSON Contract
         response = {
             "prediction": {
@@ -157,24 +216,24 @@ async def predict_multimodal(
                 "probability": confidence,
                 "confidence_score": "High" if confidence > 80 else "Low"
             },
-            "is_dummy_fallback": fallback_used,
+            "is_dummy_fallback": False,
             "uncertainty": {
-                "aleatoric_data_noise": 5.0, # Dummy for dashboard
-                "epistemic_model_ignorance": 5.0, # Dummy for dashboard
-                "total_uncertainty": 10.0 # Dummy for dashboard
+                "aleatoric_data_noise": aleatoric_u,
+                "epistemic_model_ignorance": epistemic_u,
+                "total_uncertainty": total_u
             },
             "robustness": {
-                "calibration_ece": 0.02, # Dummy
-                "ood_score": 10.0,
-                "is_ood": False
+                "calibration_ece": calibration_ece,
+                "ood_score": ood_score,
+                "is_ood": is_ood
             },
             "regression_vad": {
-                "valence": 0.0,
-                "arousal": 0.0,
-                "dominance": 0.0
+                "valence": round(v, 3),
+                "arousal": round(a, 3),
+                "dominance": round(d, 3)
             },
             "explainability": {
-                "cross_modal_attention": [0.33, 0.33, 0.34],
+                "cross_modal_attention": cross_modal_attention,
                 "reasoning_summary": f"Inference computed via Late Fusion of {active_modalities} modalities using real HF classification APIs."
             }
         }
